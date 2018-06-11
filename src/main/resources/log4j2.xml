@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="Log4j-config.xsd">
+	<Properties>
+		<Property name="filename">logs/rolling/r-$${sd:type}.log</Property>
+	</Properties>
+
+	<!-- <ThresholdFilter /> -->
+	<Appenders>
+		<Console name="Console" target="SYSTEM_OUT">
+			<PatternLayout pattern="%d [%t] %-5level %logger{36} - %msg%n" />
+		</Console>
+
+	</Appenders>
+	<Loggers>
+		<Root level="trace">
+			<AppenderRef ref="Console"></AppenderRef>
+		</Root>
+	</Loggers>
+</Configuration>
