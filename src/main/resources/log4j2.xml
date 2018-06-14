@@ -12,7 +12,8 @@
 
 	</Appenders>
 	<Loggers>
-		<Root level="trace">
+		<Logger name="log4j.logger.org.springframework.scheduling" level="info"/>
+		<Root level="info" >
 			<AppenderRef ref="Console"></AppenderRef>
 		</Root>
 	</Loggers>
