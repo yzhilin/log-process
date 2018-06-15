@@ -5,7 +5,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
-@SpringBootApplication(exclude = {DataSourceAutoConfiguration.class},scanBasePackages = "com.egaga")
+@SpringBootApplication(exclude = {DataSourceAutoConfiguration.class}, scanBasePackages = "com.egaga")
 @EnableScheduling
 public class LogProcessApplication {
 

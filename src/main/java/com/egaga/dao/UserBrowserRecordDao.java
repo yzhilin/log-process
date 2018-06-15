@@ -18,6 +18,4 @@ public interface UserBrowserRecordDao {
      * @return
      */
     public void insertUserBrowserRecord(List<UserBrowserRecord> userBrowserRecordList);
-
-
 }
