@@ -7,6 +7,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
@@ -21,7 +22,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-/**
+/**  日志读取分析组件
  * @author yangzhilin
  * @date 2018/6/13
  * @description
@@ -42,7 +43,7 @@ public class LogProcessSchedule {
      * @author yangzhilin
      * @date 2018/6/14 10:01
      */
-//    @Scheduled(fixedDelay = ONE_MIN / 4)
+    @Scheduled(fixedDelay = ONE_MIN / 4)
     public void readLogProess() {
         int bufSize = 1000;
         File file = new File("userBrowserRecord.log");
@@ -79,7 +80,7 @@ public class LogProcessSchedule {
      * @author yangzhilin
      * @date 2018/6/14 10:02
      */
-//    @Scheduled(fixedDelay = ONE_MIN / 4)
+    @Scheduled(fixedDelay = ONE_MIN / 4)
     public void analyseLog() {
         File file = new File("temp.log");
         RandomAccessFile inrw = null;
@@ -125,9 +126,9 @@ public class LogProcessSchedule {
                 System.out.println(userBrowserRecords.size());
                 System.out.println("analyse=====" + userBrowserRecords);
                 lastAnalyseIndex = fileChannel.position();
-                //批量插入数据库
-
             }
+            //批量插入数据库
+            userBrowserRecordService.addUserBrowser(userBrowserRecords);
         } catch (IOException e) {
             e.printStackTrace();
         } catch (ParseException e) {
@@ -168,7 +169,7 @@ public class LogProcessSchedule {
      * @author yangzhilin
      * @date 2018/6/14 10:09
      */
-    private UserBrowserRecord processLine(String line) throws ParseException {
+    private UserBrowserRecord processLine1(String line) throws ParseException {
         if (StringUtils.isBlank(line)) {
             logger.info("参数不合法");
             return null;
@@ -179,7 +180,7 @@ public class LogProcessSchedule {
         int startIndex2 = 0;
         int endIndex2 = 0;
         int i = 1;
-        while ((endIndex1 = line.indexOf("=", startIndex1)) != -1 && (endIndex2 = line.indexOf(",", startIndex2)) != -1) {
+        while ((endIndex1 = line.indexOf("=", startIndex1)) != -1 && (((endIndex2 = line.indexOf(",", startIndex2)) != -1)||(endIndex2 = line.indexOf(")", startIndex2)) != -1)) {
 
             String temp = line.substring(endIndex1 + 1, endIndex2);
             startIndex1 = endIndex1 + 1;
@@ -204,9 +205,10 @@ public class LogProcessSchedule {
                     userBrowserRecord.setGoodsCode(temp);
                     break;
                 case 7:
+                    String dates=line.substring(endIndex1 + 1, line.length());
                     String pattern = "EEE MMM dd HH:mm:ss zzz yyyy";
                     SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern, Locale.US);
-                    Date date = simpleDateFormat.parse(temp);
+                    Date date = simpleDateFormat.parse(dates);
                     userBrowserRecord.setBrowserDate(date);
                     break;
                 default:
@@ -216,5 +218,25 @@ public class LogProcessSchedule {
         }
         return userBrowserRecord;
     }
-
+    private UserBrowserRecord processLine(String line) throws ParseException {
+        if (StringUtils.isBlank(line)) {
+            logger.info("参数不合法");
+            return null;
+        }
+        String[] fields = line.split(",");
+        System.out.println("field()9)(0()()()"+fields);
+        UserBrowserRecord userBrowserRecord = new UserBrowserRecord();
+        userBrowserRecord.setUserId(fields[2]);
+        userBrowserRecord.setRequestSource(RequestSource.valueOf(fields[4]));
+        userBrowserRecord.setTerminalCode(fields[6]);
+        userBrowserRecord.setBussinessSouce(fields[8]);
+        userBrowserRecord.setQrCode(fields[10]);
+        userBrowserRecord.setGoodsCode(fields[12]);
+        String dates=fields[14];
+        String pattern = "EEE MMM dd HH:mm:ss zzz yyyy";
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern, Locale.US);
+        Date date = simpleDateFormat.parse(dates);
+        userBrowserRecord.setBrowserDate(date);
+        return userBrowserRecord;
+    }
 }

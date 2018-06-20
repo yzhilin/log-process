@@ -1,10 +1,10 @@
 package com.egaga.configuration.datasource;
 
-import com.sun.istack.internal.NotNull;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 import java.lang.reflect.Field;
 import java.util.Properties;
 

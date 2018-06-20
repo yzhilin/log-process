@@ -8,11 +8,15 @@ import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.mybatis.spring.SqlSessionFactoryBean;
+import org.mybatis.spring.SqlSessionTemplate;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.io.Resource;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import java.util.Properties;
 
@@ -24,6 +28,7 @@ import java.util.Properties;
 @Configuration
 @EnableConfigurationProperties(DruidDataSourceProperties.class)
 @MapperScan(basePackages = {"com.egaga.dao"})
+@EnableTransactionManagement
 public class DataSourceConfiguration {
 
     private static Logger logger = LogManager.getLogger();
@@ -59,10 +64,11 @@ public class DataSourceConfiguration {
     private PageInterceptor mybatisPageInterceptor = null;
 
     @Bean
-    public SqlSessionFactory sqlSessionFactory() throws Exception {
+    public SqlSessionFactory sqlSessionFactory(ApplicationContext applicationContext) throws Exception {
         SqlSessionFactoryBean sqlSessionFactory = new SqlSessionFactoryBean();
         sqlSessionFactory.setDataSource(dataSource());
-
+        Resource resource = applicationContext.getResource("classpath:com/egaga/dao/mapper/UserBrowserRecordMapper.xml");
+        sqlSessionFactory.setMapperLocations(new Resource[]{resource});
         // 添加分页插件PageHelper
         if (mybatisPageInterceptor != null) {
             Interceptor[] interceptors = new Interceptor[]{mybatisPageInterceptor};
@@ -70,6 +76,10 @@ public class DataSourceConfiguration {
         }
 
         return sqlSessionFactory.getObject();
+    }
+    @Bean
+    public SqlSessionTemplate sqlSessionTemplate(ApplicationContext applicationContext) throws Exception {
+        return new SqlSessionTemplate(sqlSessionFactory(applicationContext));
     }
 
 
