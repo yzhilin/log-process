@@ -11,6 +11,7 @@ public class LogProcessApplicationTests {
 
     @Test
     public void contextLoads() {
+        System.out.println("HELLO");
     }
 
 }
