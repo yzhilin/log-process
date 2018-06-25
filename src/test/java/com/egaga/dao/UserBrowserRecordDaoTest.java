@@ -1,15 +1,14 @@
 package com.egaga.dao;
 
+import com.egaga.dto.Page;
 import com.egaga.dto.RequestSource;
 import com.egaga.dto.UserBrowserRecord;
-import com.github.pagehelper.Page;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -47,7 +46,7 @@ public class UserBrowserRecordDaoTest {
     public void findAllUserBrowserRecordTest() {
         Page page = new Page();
         page.setPageSize(5);
-        page.setPageNum(1);
+        page.setCurrentPage(1);
         List<UserBrowserRecord> list = userBrowserRecordDao.findAllUserBrowserRecord(page);
         System.out.println(list);
     }
@@ -65,7 +64,7 @@ public class UserBrowserRecordDaoTest {
     @Test
     public void findUserBrowserRecordByMerchant() {
         Page page = new Page();
-        String merchantCode="WZ00001";
+        String merchantCode="WZ000011";
         List<String> merchantCodes = Collections.singletonList(merchantCode);
         List<UserBrowserRecord> userBrowserRecordByMerchant = userBrowserRecordDao.findUserBrowserRecordByMerchant(merchantCodes, page);
         System.out.println("=======================len"+userBrowserRecordByMerchant.size());
@@ -86,7 +85,6 @@ public class UserBrowserRecordDaoTest {
             userBrowserRecord.setQrCode("7777777");
             userBrowserRecords.add(userBrowserRecord);
         }
-        userBrowserRecordDao.insert(userBrowserRecords);
     }
 
 

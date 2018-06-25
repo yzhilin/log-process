@@ -1,8 +1,10 @@
 package com.egaga.service;
 
 import com.egaga.dao.UserBrowserRecordDao;
+import com.egaga.dto.Page;
 import com.egaga.dto.RequestSource;
 import com.egaga.dto.UserBrowserRecord;
+import com.github.pagehelper.PageInfo;
 import org.apache.ibatis.session.ExecutorType;
 import org.apache.ibatis.session.SqlSession;
 import org.junit.Test;
@@ -14,6 +16,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  * @author yangzhilin
@@ -93,7 +96,12 @@ public class UserBrowserRecordServiceTest {
 
     @Test
     public void queryAllUserBrowserRecordTest(){
-
+        Page page = new Page();
+        page.setPageSize(20);
+        page.setCurrentPage(1);
+        List<UserBrowserRecord> userBrowserRecords = userBrowserRecordService.queryAllUserBrowserRecord(page);
+        PageInfo<UserBrowserRecord> userBrowserRecordPageInfo = new PageInfo<>((List<UserBrowserRecord>)userBrowserRecords);
+        System.out.println("userBrowserRecords"+userBrowserRecordPageInfo);
 
     }
 

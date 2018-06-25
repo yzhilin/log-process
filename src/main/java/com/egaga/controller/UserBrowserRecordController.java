@@ -1,16 +1,15 @@
 package com.egaga.controller;
 
+import com.egaga.dto.Page;
 import com.egaga.dto.UserBrowserRecord;
+import com.egaga.dto.message.QueryMessage;
 import com.egaga.service.UserBrowserRecordService;
-import com.github.pagehelper.Page;
+import com.github.pagehelper.PageInfo;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,7 +23,8 @@ import java.util.List;
 @Controller
 @RequestMapping("/browserRecord")
 public class UserBrowserRecordController {
-    Logger logger=LogManager.getLogger();
+
+    Logger logger = LogManager.getLogger();
 
     private final UserBrowserRecordService userBrowserRecordService;
 
@@ -34,37 +34,43 @@ public class UserBrowserRecordController {
     }
 
 
-
-    @GetMapping("/all")
+    @PostMapping("/all")
     @ResponseBody
-    public List<UserBrowserRecord> showAllUserBrowserRecord(Page page) {
-        if(page==null){
+    public List<UserBrowserRecord> showAllUserBrowserRecord(@RequestBody QueryMessage<?> queryMessage) {
+        System.out.println("showAllUserBrowserRecord");
+        Page page = queryMessage.getPage();
+        System.out.println("showAllUserBrowserRecord+page"+page.getCurrentPage()+page.getPageSize());
+        if (page == null) {
             logger.info("传入的查询参数有误");
-            return new ArrayList<>();
+            return null;
         }
         List<UserBrowserRecord> userBrowserRecords = userBrowserRecordService.queryAllUserBrowserRecord(page);
         return userBrowserRecords;
     }
 
-    @GetMapping("/query/terminal")
+    @PostMapping("/query/terminal")
     @ResponseBody
-    public List<UserBrowserRecord> showTermianlUserBrowserRecord(String terminalCode,Page page){
-        if(terminalCode.isEmpty()||page==null){
+    public List<UserBrowserRecord> showTermianlUserBrowserRecord(@RequestBody QueryMessage<String> queryMessage) {
+        Page page = queryMessage.getPage();
+        String terminalCode = queryMessage.getValue();
+        if (terminalCode.isEmpty() || page == null) {
             logger.info("传入的查询参数有误");
             return new ArrayList<>();
         }
-        List<UserBrowserRecord> userBrowserRecords=userBrowserRecordService.qureryOfTermianl(terminalCode,page);
+        List<UserBrowserRecord> userBrowserRecords = userBrowserRecordService.qureryOfTermianl(terminalCode, page);
         return userBrowserRecords;
     }
 
-    @GetMapping
+    @PostMapping("/query/merchant")
     @ResponseBody
-    public List<UserBrowserRecord> showMerchantUserBrowserRecord(String merchant,Page page){
-        if(merchant.isEmpty()||page==null){
+    public List<UserBrowserRecord> showMerchantUserBrowserRecord(@RequestBody QueryMessage<String> queryMessage) {
+        Page page = queryMessage.getPage();
+        String merchant = queryMessage.getValue();
+        if (merchant.isEmpty() || page == null) {
             logger.info("传入的查询参数有误");
             return new ArrayList<>();
         }
-        List<UserBrowserRecord> userBrowserRecords=userBrowserRecordService.queryByMerchant(merchant,page);
+        List<UserBrowserRecord> userBrowserRecords = userBrowserRecordService.queryByMerchant(merchant, page);
         return userBrowserRecords;
     }
 

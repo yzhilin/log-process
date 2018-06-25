@@ -1,23 +1,21 @@
 package com.egaga.service.impl;
 
 import com.egaga.dao.UserBrowserRecordDao;
+import com.egaga.dto.Page;
 import com.egaga.dto.UserBrowserRecord;
 import com.egaga.service.UserBrowserRecordService;
-import com.github.pagehelper.Page;
 import org.apache.ibatis.session.ExecutorType;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
 /**
  * 浏览记录
@@ -70,7 +68,7 @@ public class UserBrowserRecordServiceImpl implements UserBrowserRecordService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public List<UserBrowserRecord> queryAllUserBrowserRecord(Page page) {
-        return null;
+        return userBrowserRecordDao.findAllUserBrowserRecord(page);
     }
 
     @Override

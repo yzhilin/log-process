@@ -25,7 +25,7 @@
 			</foreach>
 	</select>
 	<select id="findUserBrowserRecordByMerchant" resultMap="UserBrowserRecord">
-		select a.* from user_browser_record a left join t_ew_terminal b on a.terminal_code=b.terminal_code
+		select a.* from user_browser_record a join t_ew_terminal b on a.terminal_code=b.terminal_code
 			and b.merchant_code in
 				<foreach collection="param1" item="merchantCode" separator="," open="(" close=")">
 					#{merchantCode}

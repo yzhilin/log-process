@@ -1,8 +1,7 @@
 package com.egaga.service;
 
+import com.egaga.dto.Page;
 import com.egaga.dto.UserBrowserRecord;
-import com.github.pagehelper.Page;
-
 import java.util.List;
 
 /**

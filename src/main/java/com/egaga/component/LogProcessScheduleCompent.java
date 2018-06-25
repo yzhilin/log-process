@@ -7,6 +7,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.env.Environment;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -28,9 +30,11 @@ import java.util.Locale;
  * @description
  */
 @Component
-public class LogProcessSchedule {
+public class LogProcessScheduleCompent {
     private static final Logger logger = LogManager.getLogger();
+    @Value("${log.process.lastReadIndex}")
     private static long lastReadIndex = 0;
+    @Value("${log.process.lastAnalyseIndex}")
     private static long lastAnalyseIndex = 0;
     public static final long ONE_MIN = 60 * 1000;
 
@@ -43,7 +47,7 @@ public class LogProcessSchedule {
      * @author yangzhilin
      * @date 2018/6/14 10:01
      */
-    @Scheduled(fixedDelay = ONE_MIN / 4)
+//    @Scheduled(fixedDelay = ONE_MIN / 4)
     public void readLogProess() {
         int bufSize = 1000;
         File file = new File("userBrowserRecord.log");
@@ -80,7 +84,7 @@ public class LogProcessSchedule {
      * @author yangzhilin
      * @date 2018/6/14 10:02
      */
-    @Scheduled(fixedDelay = ONE_MIN / 4)
+//    @Scheduled(fixedDelay = ONE_MIN / 4)
     public void analyseLog() {
         File file = new File("temp.log");
         RandomAccessFile inrw = null;
@@ -218,13 +222,12 @@ public class LogProcessSchedule {
         }
         return userBrowserRecord;
     }
-    private UserBrowserRecord processLine(String line) throws ParseException {
+    private UserBrowserRecord processLine2(String line) throws ParseException {
         if (StringUtils.isBlank(line)) {
             logger.info("参数不合法");
             return null;
         }
         String[] fields = line.split(",");
-        System.out.println("field()9)(0()()()"+fields);
         UserBrowserRecord userBrowserRecord = new UserBrowserRecord();
         userBrowserRecord.setUserId(fields[2]);
         userBrowserRecord.setRequestSource(RequestSource.valueOf(fields[4]));
@@ -239,4 +242,12 @@ public class LogProcessSchedule {
         userBrowserRecord.setBrowserDate(date);
         return userBrowserRecord;
     }
+
+    private UserBrowserRecord processLine(String line)throws ParseException{
+
+
+
+        return null;
+    }
+
 }

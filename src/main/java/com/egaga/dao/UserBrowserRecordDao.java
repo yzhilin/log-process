@@ -1,7 +1,7 @@
 package com.egaga.dao;
 
+import com.egaga.dto.Page;
 import com.egaga.dto.UserBrowserRecord;
-import com.github.pagehelper.Page;
 
 import java.util.List;
 
@@ -46,5 +46,4 @@ public interface UserBrowserRecordDao {
      */
     List<UserBrowserRecord> findUserBrowserRecordByMerchant(List<String> merchantCodes, Page page);
 
-    void insert(List<UserBrowserRecord> userBrowserRecords);
 }
