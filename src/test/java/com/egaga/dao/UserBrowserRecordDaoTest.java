@@ -47,7 +47,8 @@ public class UserBrowserRecordDaoTest {
         Page page = new Page();
         page.setPageSize(5);
         page.setCurrentPage(1);
-        List<UserBrowserRecord> list = userBrowserRecordDao.findAllUserBrowserRecord(page);
+        List<UserBrowserRecord> list = userBrowserRecordDao.findAllUserBrowserRecord(null);
+        System.out.println("================");
         System.out.println(list);
     }
 
@@ -56,7 +57,7 @@ public class UserBrowserRecordDaoTest {
         Page page = new Page();
         String terminalCode = "termianlCode";
         List<String> strings = Collections.singletonList(terminalCode);
-        List<UserBrowserRecord> userBrowserRecords = userBrowserRecordDao.findUserBrowserRecordByTerminal(strings, page);
+        List<UserBrowserRecord> userBrowserRecords = userBrowserRecordDao.findUserBrowserRecordByTerminal(strings, null);
         System.out.println("===================");
         System.out.println(userBrowserRecords);
     }

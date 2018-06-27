@@ -19,10 +19,7 @@ import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 
 /**  日志读取分析组件
  * @author yangzhilin
@@ -47,10 +44,10 @@ public class LogProcessScheduleCompent {
      * @author yangzhilin
      * @date 2018/6/14 10:01
      */
-//    @Scheduled(fixedDelay = ONE_MIN / 4)
+    //@Scheduled(fixedDelay = ONE_MIN)
     public void readLogProess() {
         int bufSize = 1000;
-        File file = new File("userBrowserRecord.log");
+        File file = new File("browserInfo.log");
         File outFile = new File("temp.log");
         RandomAccessFile inrw = null;
         RandomAccessFile outrw = null;
@@ -84,7 +81,7 @@ public class LogProcessScheduleCompent {
      * @author yangzhilin
      * @date 2018/6/14 10:02
      */
-//    @Scheduled(fixedDelay = ONE_MIN / 4)
+    //@Scheduled(fixedDelay = ONE_MIN)
     public void analyseLog() {
         File file = new File("temp.log");
         RandomAccessFile inrw = null;
@@ -117,8 +114,8 @@ public class LogProcessScheduleCompent {
                     index = endIndex;
                     String line = temp.substring(fromIndex, endIndex);
                     line = stringBuffer.toString() + line;
-                    logger.info("line--------" + line);
-                    UserBrowserRecord userBrowserRecord = processLine(line);
+                    HashMap<String, String> hashMap = processLine(line);
+                    UserBrowserRecord userBrowserRecord=buildUserBrowserRecord(hashMap);
                     if (userBrowserRecord != null) {
                         userBrowserRecords.add(userBrowserRecord);
                     }
@@ -128,10 +125,11 @@ public class LogProcessScheduleCompent {
                 //拼接最后没有匹配到的字符串
                 temp = temp.substring(index + 1, temp.length());
                 System.out.println(userBrowserRecords.size());
-                System.out.println("analyse=====" + userBrowserRecords);
+              //  System.out.println("analyse=====" + userBrowserRecords);
                 lastAnalyseIndex = fileChannel.position();
             }
             //批量插入数据库
+            System.out.println("bengin=======================dbinsert"+userBrowserRecords);
             userBrowserRecordService.addUserBrowser(userBrowserRecords);
         } catch (IOException e) {
             e.printStackTrace();
@@ -152,14 +150,10 @@ public class LogProcessScheduleCompent {
 
     private void readAndWriteFile(FileChannel fileChannelin, FileChannel fileChannelout, ByteBuffer byteBuffer) throws IOException {
         fileChannelin.position(lastReadIndex);
-        System.out.println(fileChannelin.size());
         while (fileChannelin.read(byteBuffer) != -1) {
-            System.out.println();
             //去除buffer中有可能的空白
             byteBuffer.flip();
-            System.out.println(byteBuffer.toString());
             fileChannelout.write(byteBuffer, fileChannelout.size());
-            System.out.println("fileChannelout.size()输出文件大小" + fileChannelout.size());
             //恢复buffer,为下一次读取做准备
             byteBuffer.clear();
         }
@@ -243,11 +237,30 @@ public class LogProcessScheduleCompent {
         return userBrowserRecord;
     }
 
-    private UserBrowserRecord processLine(String line)throws ParseException{
-
-
-
-        return null;
+    private HashMap<String,String> processLine(String line)throws ParseException{
+        HashMap<String, String> hashMap = new HashMap<>();
+        String processLine=line.substring(line.indexOf("(")+1,line.indexOf(")"));
+        String[] split = processLine.split(",");
+        for (int d = 0; d <split.length ; d++) {
+            String regex = "=";
+            String[] split1 = split[d].split(regex);
+            hashMap.put(split1[0].trim(),split1[1]);
+        }
+        return hashMap;
     }
+
+    private UserBrowserRecord buildUserBrowserRecord(Map<String,String> map) throws ParseException {
+        UserBrowserRecord userBrowserRecord = new UserBrowserRecord();
+        userBrowserRecord.setQrCode(map.get("lastVisitEntrance"));
+        userBrowserRecord.setUserId(map.get("userId"));
+        userBrowserRecord.setRequestSource(RequestSource.valueOf(map.get("requestSource")));
+        userBrowserRecord.setBussinessSouce(map.get("bussinessSource"));
+        String pattern = "EEE MMM dd HH:mm:ss zzz yyyy";
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern, Locale.US);
+        userBrowserRecord.setBrowserDate(simpleDateFormat.parse(map.get("lastVisitTime")));
+        return userBrowserRecord;
+    }
+
+
 
 }

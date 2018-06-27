@@ -35,4 +35,12 @@ public interface UserBrowserRecordService {
      */
     List<UserBrowserRecord> queryByMerchant(String integer,Page page);
 
+    /** 查询指定二维码的浏览记录
+     * @author yangzhilin
+     * @date 2018/6/27 16:58
+     */
+    List<UserBrowserRecord> queryByQrcode(String qrCode,Page page);
+
+
+
 }

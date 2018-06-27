@@ -4,6 +4,7 @@ import com.egaga.dao.UserBrowserRecordDao;
 import com.egaga.dto.Page;
 import com.egaga.dto.UserBrowserRecord;
 import com.egaga.service.UserBrowserRecordService;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.session.ExecutorType;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.logging.log4j.LogManager;
@@ -11,6 +12,7 @@ import org.apache.logging.log4j.Logger;
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
@@ -43,7 +45,7 @@ public class UserBrowserRecordServiceImpl implements UserBrowserRecordService {
      * @date 2018/6/15 10:15
      */
     @Override
-    @Transactional(rollbackFor = Exception.class,readOnly = false)
+    @Transactional(rollbackFor = Exception.class,readOnly = false,propagation =Propagation.REQUIRED )
     public int addUserBrowser(List<UserBrowserRecord> userBrowserRecords) {
         SqlSession session = sqlSessionTemplate.getSqlSessionFactory().openSession(ExecutorType.BATCH, false);
         int size=userBrowserRecords.size();
@@ -90,6 +92,17 @@ public class UserBrowserRecordServiceImpl implements UserBrowserRecordService {
             return new ArrayList<>();
         }
         List<UserBrowserRecord> userBrowserRecords=userBrowserRecordDao.findUserBrowserRecordByMerchant(Collections.singletonList(merchantCode),page);
+        return userBrowserRecords;
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public List<UserBrowserRecord> queryByQrcode(String qrCode, Page page) {
+        if(StringUtils.isEmpty(qrCode)){
+            logger.info("二维码数据为空");
+            return new ArrayList<>();
+        }
+        List<UserBrowserRecord> userBrowserRecords=userBrowserRecordDao.findUserBrowserRecordByQrcode(Collections.singletonList(qrCode),page);
         return userBrowserRecords;
     }
 

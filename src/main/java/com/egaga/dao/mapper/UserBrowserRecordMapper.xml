@@ -1,35 +1,50 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.egaga.dao.UserBrowserRecordDao">
-	<resultMap id="UserBrowserRecord" type="com.egaga.dto.UserBrowserRecord">
-		<id property="id" column="id"></id>
-		<result property="userId" column="user_id"></result>
-		<result property="requestSource" column="request_source"></result>
-		<result property="terminalCode" column="terminal_Code"></result>
-		<result property="bussinessSouce" column="bussiness_source"></result>
-		<result property="qrCode" column="qr_code"></result>
-		<result property="goodsCode" column="goods_code"></result>
-		<result property="browserDate" column="browser_date"></result>
-	</resultMap>
-	<insert id="insertUserBrowserRecord" parameterType="com.egaga.dto.UserBrowserRecord">
+    <resultMap id="UserBrowserRecord" type="com.egaga.dto.UserBrowserRecord">
+        <id property="id" column="id"></id>
+        <result property="userId" column="user_id"></result>
+        <result property="requestSource" column="request_source"></result>
+        <result property="terminalCode" column="terminal_Code"></result>
+        <result property="bussinessSouce" column="bussiness_source"></result>
+        <result property="qrCode" column="qr_code"></result>
+        <result property="goodsCode" column="goods_code"></result>
+        <result property="browserDate" column="browser_date"></result>
+    </resultMap>
+    <insert id="insertUserBrowserRecord" parameterType="com.egaga.dto.UserBrowserRecord">
 		insert into user_browser_record (`user_id`,`request_source`,`terminal_code`,`bussiness_source`,`qr_code`,`goods_code`,`browser_date`)
 				values (#{userId},#{requestSource},#{terminalCode},#{bussinessSouce},#{qrCode},#{goodsCode},#{browserDate})
 	</insert>
-	<select id="findAllUserBrowserRecord" resultMap="UserBrowserRecord">
+    <select id="findAllUserBrowserRecord" resultMap="UserBrowserRecord">
 		select * from user_browser_record
 	</select>
-	<select id="findUserBrowserRecordByTerminal" resultMap="UserBrowserRecord">
-		select * from user_browser_record where terminal_code in
-			<foreach collection="param1" item="terminalCode" separator="," open="(" close=")">
-				#{terminalCode}
-			</foreach>
-	</select>
-	<select id="findUserBrowserRecordByMerchant" resultMap="UserBrowserRecord">
-		select a.* from user_browser_record a join t_ew_terminal b on a.terminal_code=b.terminal_code
-			and b.merchant_code in
-				<foreach collection="param1" item="merchantCode" separator="," open="(" close=")">
-					#{merchantCode}
-				</foreach>
-	</select>
+    <select id="findUserBrowserRecordByTerminal" resultMap="UserBrowserRecord">
+        select * from user_browser_record where qr_code in (
+          select qr_code from t_ew_terminal where terminal_code in
+            <foreach collection="param1" item="terminalCode" separator="," open="(" close=")">
+               #{terminalCode}
+            </foreach>
+        )
+        <!--select * from user_browser_record where terminal_code in-->
+        <!--<foreach collection="param1" item="terminalCode" separator="," open="(" close=")">-->
+        <!--#{terminalCode}-->
+        <!--</foreach>-->
+    </select>
+    <select id="findUserBrowserRecordByMerchant" resultMap="UserBrowserRecord">
+        select a.* from user_browser_record a join t_ew_terminal b on a.terminal_code=b.terminal_code
+        and b.merchant_code in
+        <foreach collection="param1" item="merchantCode" separator="," open="(" close=")">
+            #{merchantCode}
+        </foreach>
+    </select>
+
+    <select id="findUserBrowserRecordByQrcode" resultMap="UserBrowserRecord">
+        select * from user_browser_record where qr_code in
+        <foreach collection="param1" item="qrCode" separator="," open="(" close=")">
+            #{qrCode}
+        </foreach>
+    </select>
+
+
 
 </mapper>

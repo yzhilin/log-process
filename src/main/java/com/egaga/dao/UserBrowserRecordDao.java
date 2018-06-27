@@ -46,4 +46,11 @@ public interface UserBrowserRecordDao {
      */
     List<UserBrowserRecord> findUserBrowserRecordByMerchant(List<String> merchantCodes, Page page);
 
+    /** 查询指定二维码的浏览记录
+     * @author yangzhilin
+     * @date 2018/6/27 17:04
+     */
+    List<UserBrowserRecord> findUserBrowserRecordByQrcode(List<String>qrCodes,Page page);
+
+
 }
