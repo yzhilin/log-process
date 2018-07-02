@@ -14,18 +14,18 @@ import org.springframework.stereotype.Component;
 @Component
 public class OperateComponent {
 
-    @Before("execution(* com.egaga.aop.Operate.* (..))")
-    public void processArgs(JoinPoint joinPoint){
-        System.out.println(joinPoint.getArgs());
-        System.out.println("dddddddddddddddd");
+    //@Before("execution(* com.egaga.aop.Operate.*(..))&&(args(a,..))")
+    public void processArgs(String a){
+//        System.out.println("===============");
+        System.out.println("a"+a);
     }
 
-   @Before("within(com.egaga.aop.*)")
-    public void test(){
-       System.out.println("ddddddddddddd");
+    @Before(value = "execution(* com.egaga.aop.Operate.*(..))&&(args(..,c))",argNames = "c")
+    public void test(String c){
+       System.out.println("c"+c);
    }
 
-   @Before("target(com.egaga.aop.Operate)")
+   //@Before("target(com.egaga.aop.Operate)")
     public void test1(){
 
    }
