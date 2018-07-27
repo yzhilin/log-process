@@ -15,7 +15,7 @@
 		insert into user_browser_record (`user_id`,`request_source`,`terminal_code`,`bussiness_source`,`qr_code`,`goods_code`,`browser_date`)
 				values (#{userId},#{requestSource},#{terminalCode},#{bussinessSouce},#{qrCode},#{goodsCode},#{browserDate})
 	</insert>
-    <select id="findAllUserBrowserRecord" resultMap="UserBrowserRecord">
+    <select id="findAllUserBrowserRecord" resultType="com.egaga.dto.UserBrowserRecord">
 		select * from user_browser_record
 	</select>
     <select id="findUserBrowserRecordByTerminal" resultMap="UserBrowserRecord">

@@ -170,6 +170,13 @@
             <artifactId>jedis</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>com.roc.terminal</groupId>
+            <artifactId>terminal-chiccheck-health</artifactId>
+            <version>0.2</version>
+        </dependency>
+
+
 
     </dependencies>
 
